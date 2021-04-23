@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import CloseXIcon from "../../public/static/svg/modal/modal_colose_x_icon.svg";
 import MailIcon from "../../public/static/svg/auth/mail.svg";
 import PersonIcon from "../../public/static/svg/auth/person.svg";
@@ -10,6 +11,9 @@ import Input from "../common/input";
 import palette from "../../styles/palette";
 import { monthList, dayList, yearList } from "../../lib/staticData";
 import Selector from "../common/Selector";
+import Button from "../common/Button";
+import { signupAPI } from "../../lib/api/auth";
+import { userActions } from "../../store/user";
 
 const Container = styled.div`
     width: 568px;
@@ -64,6 +68,12 @@ const Container = styled.div`
             width: 33.3333%;
         }
     }
+  
+    .sign-up-modal-submit-button-wrapper {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid ${palette.gray_eb};
+    }
 `;
 
 // input {
@@ -88,8 +98,8 @@ const Container = styled.div`
 
 const SignUpModal: React.FC = () => {
     const [email, setEmail] = useState("");
-    const [lastName, setLastname] = useState("");
-    const [firstName, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [firstname, setFirstname] = useState("");
     const [password, setPassword] = useState("");
 
     const [birthYear, setBirthYear] = useState<string | undefined>();
@@ -97,6 +107,8 @@ const SignUpModal: React.FC = () => {
     const [birthDay, setBirthDay] = useState<string | undefined>();
 
     const [hidePassword, setHidePassword] = useState(true);
+
+    const dispatch = useDispatch();
 
     const toggleHidePassword = () => {
         setHidePassword(!hidePassword);
@@ -130,17 +142,39 @@ const SignUpModal: React.FC = () => {
         setBirthDay(event.target.value);
     };
 
+    //* 회원가입 폼 제출하기
+    const onSubmitSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      try {
+          const signUpBody = {
+            email,
+            lastname,
+            firstname,
+            password,
+            birthday: new Date(
+              `${birthYear}-${birthMonth!.replace("월", "")}-${birthDay}`
+            ).toISOString(),
+          };
+          const { data } = await signupAPI(signUpBody);
+
+          dispatch(userActions.setLoggedUser(data));
+      } catch (e) {
+          console.log(e);
+      }
+  };
+
     return (
-      <Container>
+      <Container onSubmit={onSubmitSignUp}>
         <CloseXIcon className="modal-close-x-icon" />
         <div className="input-wrapper">
           <Input placeholder="이메일 주소" type="email" name="email" icon={<MailIcon />} value={email} onChange={onChangeEmail} />
         </div>
         <div className="input-wrapper">
-          <Input placeholder="이름(예:길동)" icon={<PersonIcon />} value={lastName} onChange={onChangeLastname} />
+          <Input placeholder="이름(예:길동)" icon={<PersonIcon />} value={lastname} onChange={onChangeLastname} />
         </div>
         <div className="input-wrapper">
-          <Input placeholder="성(예: 홍)" icon={<PersonIcon />} value={firstName} onChange={onChangeFirstname} />
+          <Input placeholder="성(예: 홍)" icon={<PersonIcon />} value={firstname} onChange={onChangeFirstname} />
         </div>
         <div className="input-wrapper">
           <Input
@@ -180,6 +214,9 @@ const SignUpModal: React.FC = () => {
               onChange={onChangeBirthYear}
             />
           </div>
+        </div><br />
+        <div className="sign-up-modal-submit-button-wrapper">
+          <Button type="submit">가입 하기</Button>
         </div>
       </Container>
     );
