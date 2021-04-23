@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable max-len */
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -146,6 +147,12 @@ const SignUpModal: React.FC = () => {
     const onSubmitSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
+      //setValidateMode(true);
+
+      if (!email || !lastname || !firstname || !password) {
+        return undefined;
+      }
+
       try {
           const signUpBody = {
             email,
@@ -168,21 +175,56 @@ const SignUpModal: React.FC = () => {
       <Container onSubmit={onSubmitSignUp}>
         <CloseXIcon className="modal-close-x-icon" />
         <div className="input-wrapper">
-          <Input placeholder="이메일 주소" type="email" name="email" icon={<MailIcon />} value={email} onChange={onChangeEmail} />
+          <Input
+            placeholder="이메일 주소"
+            type="email"
+            icon={<MailIcon />}
+            name="email"
+            value={email}
+            onChange={onChangeEmail}
+            useValidation
+            isValid={!!email}
+            errorMessage="이메일이 필요합니다."
+          />
         </div>
         <div className="input-wrapper">
-          <Input placeholder="이름(예:길동)" icon={<PersonIcon />} value={lastname} onChange={onChangeLastname} />
+          <Input
+            placeholder="이름(예:길동)"
+            icon={<PersonIcon />}
+            value={lastname}
+            onChange={onChangeLastname}
+            useValidation
+            isValid={!!lastname}
+            errorMessage="이름을 입력하세요."
+          />
         </div>
         <div className="input-wrapper">
-          <Input placeholder="성(예: 홍)" icon={<PersonIcon />} value={firstname} onChange={onChangeFirstname} />
+          <Input
+            placeholder="성(예: 홍)"
+            icon={<PersonIcon />}
+            value={firstname}
+            onChange={onChangeFirstname}
+            useValidation
+            isValid={!!firstname}
+            errorMessage="성을 입력하세요."
+          />
         </div>
         <div className="input-wrapper">
           <Input
             placeholder="비밀번호 설정하기"
             type={hidePassword ? "password" : "text"}
-            icon={hidePassword ? (<ClosedEyeIcon onClick={toggleHidePassword} />) : (<OpenedEyeIcon onClick={toggleHidePassword} />)}
+            icon={
+              hidePassword ? (
+                <ClosedEyeIcon onClick={toggleHidePassword} />
+              ) : (
+                <OpenedEyeIcon onClick={toggleHidePassword} />
+              )
+            }
             value={password}
             onChange={onChangePassword}
+            useValidation
+            isValid={!!password}
+            errorMessage="비밀번호를 입력하세요"
           />
         </div>
         <p className="sign-up-birthdat-label">생일</p>
