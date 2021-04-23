@@ -15,7 +15,7 @@ import Button from "../common/Button";
 import { signupAPI } from "../../lib/api/auth";
 import { userActions } from "../../store/user";
 
-const Container = styled.div`
+const Container = styled.form`
     width: 568px;
     height: 614px;
     padding: 32px;
