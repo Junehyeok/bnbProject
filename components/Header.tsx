@@ -1,34 +1,35 @@
 import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
 import AirbnbLogoIcon from "../public/static/svg/logo/Logo_Airbnb.svg";
 import AirbnbLogoTextIcon from "../public/static/svg/logo/Airbnb_text_black.svg";
 import palette from "../styles/palette";
-//import ModalPortal from "./ModalPortal";
-import SignUpModal from "./auth/SignUpModal";
 import useModal from "../hooks/useModal";
 import { useSelector } from "../store";
 import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
+import { authActions } from "../store/auth";
+import AuthModal from "./auth/AuthModal";
 
 const Container = styled.div`
-position: sticky;
-top: 0;
-width: 100%;
-height: 80px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0 80px;
-background-color: white;
-box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 12px;
-z-index: 10;
-.header-logo-wrapper {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 80px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  .header-logo {
-    margin-right: 6px;
+  padding: 0 80px;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 12px;
+  z-index: 10;
+  .header-logo-wrapper {
+    display: flex;
+    align-items: center;
+    .header-logo {
+      margin-right: 6px;
+    }
   }
-}
 
 .header-auth-buttons {
     .header-sign-up-button {
@@ -110,6 +111,7 @@ z-index: 10;
 const Header: React.FC = () => {
     const { openModal, ModalPortal, closeModal } = useModal();
     const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
     //const [modalOpened, setModalOpened] = useState(false);
     return (
       <Container>
@@ -122,10 +124,24 @@ const Header: React.FC = () => {
 
         {!user.isLogged && (
           <div className="header-auth-buttons">
-            <button type="button" className="header-sign-up-button" onClick={openModal}>
+            <button
+              type="button"
+              className="header-sign-up-button"
+              onClick={() => {
+              dispatch(authActions.setAuthMode("signup"));
+              openModal();
+            }}
+            >
               회원가입
             </button>
-            <button type="button" className="header-login-button">
+            <button
+              type="button"
+              className="header-login-button"
+              onClick={() => {
+              dispatch(authActions.setAuthMode("login"));
+              openModal();
+            }}
+            >
               로그인
             </button>
           </div>
@@ -141,7 +157,7 @@ const Header: React.FC = () => {
           </button>
         )}
         <ModalPortal>
-          <SignUpModal closeModal={closeModal} />
+          <AuthModal closeModal={closeModal} />
         </ModalPortal>
       </Container>
     );

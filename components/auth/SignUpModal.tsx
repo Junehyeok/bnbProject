@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import CloseXIcon from "../../public/static/svg/modal/modal_colose_x_icon.svg";
@@ -15,6 +15,7 @@ import { signupAPI } from "../../lib/api/auth";
 import { userActions } from "../../store/user";
 import useValidateMode from "../../hooks/useValidateMode";
 import PasswordWarning from "./PasswordWarning";
+import { authActions } from "../../store/auth";
 
 const Container = styled.form`
     width: 568px;
@@ -187,6 +188,12 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
         ),
       [password]
     );
+
+    //* 로그인 모달로 변경하기
+    const changeToLoginModal = useCallback(() => {
+      dispatch(authActions.setAuthMode("login"));
+    }, []);
+
     useEffect(() => {
       return () => {
         setValidateMode(false);
@@ -334,7 +341,7 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
           <span
             className="sign-up-modal-set-login"
             role="presentation"
-            onClick={() => {}}
+            onClick={changeToLoginModal}
           >로그인
           </span>
         </p>
