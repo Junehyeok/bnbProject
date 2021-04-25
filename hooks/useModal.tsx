@@ -24,7 +24,6 @@ const useModal = () => {
     const [modalOpened, setModalOpened] = useState(false);
 
     const openModal = () => {
-        console.log("openModal");
         setModalOpened(true);
     };
 

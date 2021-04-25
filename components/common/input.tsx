@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import React from "react";
 import styled, { css } from "styled-components";
 import palette from "../../styles/palette";
@@ -67,7 +66,7 @@ type InputContainerProps = {
   `;
 
   interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    icon?: JSX.Element;
+    icon?: JSX.Element
     isValid?: boolean;
     useValidation?: boolean;
     errorMessage?: string;
