@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
+import OutsideClickHandler from "react-outside-click-handler";
 import AirbnbLogoIcon from "../public/static/svg/logo/Logo_Airbnb.svg";
 import AirbnbLogoTextIcon from "../public/static/svg/logo/Airbnb_text_black.svg";
 import palette from "../styles/palette";
@@ -10,6 +11,10 @@ import { useSelector } from "../store";
 import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
 import { authActions } from "../store/auth";
 import AuthModal from "./auth/AuthModal";
+import { logoutAPI } from "../lib/api/auth";
+import { userActions } from "../store/user";
+import HeaderAuths from "./HeaderAuth";
+import HeaderUserProfile from "./HeaderUserProfile";
 
 const Container = styled.div`
   position: sticky;
@@ -83,36 +88,42 @@ const Container = styled.div`
     }
   }
 
-  .modal-wrapper {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      .modal-background {
-          posotion: absolute;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.75);
-          z-index: 10;
-      }
-      .modal-contents {
-          width: 400px;
-          height: 400px;
-          background-color: white;
-          z-index: 11;
-      }
+  /** react-ouside-click-handler div */
+  .header-logo-wrapper + div {
+    position: relative;
   }
+
+  .header-usermenu {
+    position: absolute;
+    right: 0;
+    top: 52px;
+    width: 240px;
+    padding: 8px 0;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    background-color: white;
+    li {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 42px;
+      padding: 0 16px;
+      cursor: pointer;
+      &:hover {
+        background-color: ${palette.gray_f7};
+      }
+    }
+    .header-usermenu-divider {
+      width: 100%;
+      height: 1px;
+      margin: 8px 0;
+      background-color: ${palette.gray_dd};
+    }
 `;
 
 const Header: React.FC = () => {
-    const { openModal, ModalPortal, closeModal } = useModal();
-    const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
-    //const [modalOpened, setModalOpened] = useState(false);
+    const isLogged = useSelector((state) => state.user.isLogged);
+
     return (
       <Container>
         <Link href="/">
@@ -122,43 +133,8 @@ const Header: React.FC = () => {
           </a>
         </Link>
 
-        {!user.isLogged && (
-          <div className="header-auth-buttons">
-            <button
-              type="button"
-              className="header-sign-up-button"
-              onClick={() => {
-              dispatch(authActions.setAuthMode("signup"));
-              openModal();
-            }}
-            >
-              회원가입
-            </button>
-            <button
-              type="button"
-              className="header-login-button"
-              onClick={() => {
-              dispatch(authActions.setAuthMode("login"));
-              openModal();
-            }}
-            >
-              로그인
-            </button>
-          </div>
-        )}
-        {user.isLogged && (
-          <button className="header-user-profile" type="button">
-            <HamburgerIcon />
-            <img
-              src={user.profileImage}
-              className="header-user-profile=image"
-              alt=""
-            />
-          </button>
-        )}
-        <ModalPortal>
-          <AuthModal closeModal={closeModal} />
-        </ModalPortal>
+        {!isLogged && <HeaderAuths />}
+        {isLogged && <HeaderUserProfile />}
       </Container>
     );
 };
