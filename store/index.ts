@@ -6,9 +6,11 @@ import {
 } from "react-redux";
 import user from "./user";
 import { UserType } from "../types/user";
+import common from "./common";
 
 const rootReducer = combineReducers({
     user: user.reducer,
+    common: common.reducer,
 });
 
 //* 스토어의 타입

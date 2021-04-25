@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 import React from "react";
 import styled, { css } from "styled-components";
 import palette from "../../styles/palette";
+import { useSelector } from "../../store";
 
 type InputContainerProps = {
     iconExist: boolean;
@@ -67,19 +69,18 @@ type InputContainerProps = {
   interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     icon?: JSX.Element;
     isValid?: boolean;
-    validateMode?: boolean;
     useValidation?: boolean;
     errorMessage?: string;
   }
 
   const Input: React.FC<IProps> = ({
     icon,
-    validateMode,
     isValid = false,
     useValidation = true,
     errorMessage,
     ...props
   }) => {
+      const validateMode = useSelector((state) => state.common.validateMode);
       return (
         <Container
           iconExist={!!icon}

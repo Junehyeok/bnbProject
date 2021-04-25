@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable max-len */
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
@@ -15,6 +13,7 @@ import Selector from "../common/Selector";
 import Button from "../common/Button";
 import { signupAPI } from "../../lib/api/auth";
 import { userActions } from "../../store/user";
+import useValidateMode from "../../hooks/useValidateMode";
 
 const Container = styled.form`
     width: 568px;
@@ -110,6 +109,7 @@ const SignUpModal: React.FC = () => {
     const [hidePassword, setHidePassword] = useState(true);
 
     const dispatch = useDispatch();
+    const { setValidateMode } = useValidateMode();
 
     const toggleHidePassword = () => {
         setHidePassword(!hidePassword);
@@ -147,7 +147,7 @@ const SignUpModal: React.FC = () => {
     const onSubmitSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      //setValidateMode(true);
+      setValidateMode(true);
 
       if (!email || !lastname || !firstname || !password) {
         return undefined;
